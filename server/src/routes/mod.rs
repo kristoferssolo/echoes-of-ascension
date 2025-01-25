@@ -1,30 +1,39 @@
+mod api;
 mod health_check;
-mod user;
-use std::time::Duration;
 
-use app::{shell, App};
+use app::{shell, startup::AppState, App};
 use axum::{
     body::Bytes,
     extract::MatchedPath,
     http::{HeaderMap, Request},
     response::Response,
-    routing::{get, post},
+    routing::get,
     Router,
 };
 use health_check::health_check;
-
 use leptos_axum::{generate_route_list, LeptosRoutes};
+use std::time::Duration;
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{info_span, Span};
-use user::register;
 use uuid::Uuid;
 
-use crate::startup::AppState;
-
 pub fn route(state: AppState) -> Router {
+    let leptos_options = state.leptos_options.clone();
+    let routes = generate_route_list(App);
+
     Router::new()
-        .merge(leptos_routes(state.clone()))
-        .merge(api_routes(state))
+        .route("/health_check", get(health_check))
+        // API routes with proper nesting
+        .nest("/api", api::routes())
+        .with_state(state)
+        // Leptos setup
+        .leptos_routes(&leptos_options, routes, {
+            let leptos_options = leptos_options.clone();
+            move || shell(leptos_options.clone())
+        })
+        .fallback(leptos_axum::file_and_error_handler(shell))
+        .with_state(leptos_options)
+        // Tracing layer
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(|request: &Request<_>| {
@@ -50,28 +59,4 @@ pub fn route(state: AppState) -> Router {
                     |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {},
                 ),
         )
-}
-
-fn leptos_routes(state: AppState) -> Router {
-    let leptos_options = state.leptos_options.clone();
-    let routes = generate_route_list(App);
-
-    Router::new()
-        .leptos_routes(&leptos_options, routes, {
-            let leptos_options = leptos_options.clone();
-            move || shell(leptos_options.clone())
-        })
-        .fallback(leptos_axum::file_and_error_handler(shell))
-        .with_state(leptos_options)
-}
-
-fn api_routes(state: AppState) -> Router {
-    Router::new()
-        .nest(
-            "/api/v1",
-            Router::new()
-                .route("/health_check", get(health_check))
-                .route("/register", post(register)),
-        )
-        .with_state(state)
 }

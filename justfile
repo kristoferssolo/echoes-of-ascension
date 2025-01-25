@@ -1,7 +1,5 @@
 set dotenv-load
 
-export RUSTC_WRAPPER:="sccache"
-
 # List all available commands
 default:
     @just --list

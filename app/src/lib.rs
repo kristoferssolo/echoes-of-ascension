@@ -1,4 +1,8 @@
+pub mod config;
+pub mod db;
 pub mod models;
+pub mod server_fn;
+pub mod startup;
 pub mod telemetry;
 
 use leptos::prelude::*;
@@ -32,7 +36,7 @@ pub fn App() -> impl IntoView {
     provide_meta_context();
 
     view! {
-        <Stylesheet id="leptos" href="/pkg/start-axum-workspace.css" />
+        <Stylesheet id="leptos" href="/pkg/echoes-of-ascension.css" />
 
         // sets the document title
         <Title text="Welcome to Leptos" />

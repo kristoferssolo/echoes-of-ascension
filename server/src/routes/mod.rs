@@ -1,4 +1,5 @@
 mod health_check;
+mod user;
 use std::time::Duration;
 
 use app::{shell, App};
@@ -7,7 +8,7 @@ use axum::{
     extract::MatchedPath,
     http::{HeaderMap, Request},
     response::Response,
-    routing::get,
+    routing::{get, post},
     Router,
 };
 use health_check::health_check;
@@ -15,6 +16,7 @@ use health_check::health_check;
 use leptos_axum::{generate_route_list, LeptosRoutes};
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::{info_span, Span};
+use user::register;
 use uuid::Uuid;
 
 use crate::startup::AppState;
@@ -67,7 +69,9 @@ fn api_routes(state: AppState) -> Router {
     Router::new()
         .nest(
             "/api/v1",
-            Router::new().route("/health_check", get(health_check)),
+            Router::new()
+                .route("/health_check", get(health_check))
+                .route("/register", post(register)),
         )
         .with_state(state)
 }

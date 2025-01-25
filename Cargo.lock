@@ -2422,6 +2422,7 @@ dependencies = [
  "config 0.15.6",
  "leptos",
  "leptos_axum",
+ "rand",
  "secrecy",
  "serde",
  "serde-aux",
@@ -2432,6 +2433,7 @@ dependencies = [
  "tower-http",
  "tracing",
  "tracing-log 0.2.0",
+ "unicode-segmentation",
  "uuid",
 ]
 

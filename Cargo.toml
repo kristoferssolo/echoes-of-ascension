@@ -46,6 +46,8 @@ secrecy = { version = "0.10", features = ["serde"] }
 validator = "0.20"
 config = { version = "0.15", features = ["toml"], default-features = false }
 serde-aux = "4"
+unicode-segmentation = "1"
+rand = "0.8"
 
 # See https://github.com/leptos-rs/cargo-leptos for documentation of all the parameters.
 

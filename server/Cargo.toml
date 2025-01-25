@@ -23,3 +23,5 @@ serde-aux.workspace = true
 config.workspace = true
 secrecy.workspace = true
 uuid.workspace = true
+unicode-segmentation.workspace = true
+rand.workspace = true

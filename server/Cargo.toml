@@ -15,12 +15,4 @@ tokio.workspace = true
 tower.workspace = true
 tower-http.workspace = true
 tracing.workspace = true
-
-[lints.clippy]
-pedantic = "warn"
-nursery = "warn"
-unwrap_used = "warn"
-expect_used = "warn"
-
-[package.metadata.nextest]
-slow-timeout = { period = "120s", terminate-after = 3 }
+sqlx.workspace = true

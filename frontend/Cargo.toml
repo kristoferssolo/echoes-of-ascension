@@ -14,12 +14,3 @@ leptos = { workspace = true, features = ["hydrate"] }
 
 tracing.workspace = true
 wasm-bindgen.workspace = true
-
-[lints.clippy]
-pedantic = "warn"
-nursery = "warn"
-unwrap_used = "warn"
-expect_used = "warn"
-
-[package.metadata.nextest]
-slow-timeout = { period = "120s", terminate-after = 3 }

@@ -20,8 +20,9 @@ tracing-subscriber.workspace = true
 tracing-bunyan-formatter.workspace = true
 tracing-log.workspace = true
 sqlx.workspace = true
-serde.workspace = true
+uuid.workspace = true
 chrono.workspace = true
+serde.workspace = true
 
 [features]
 default = []

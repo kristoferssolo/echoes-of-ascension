@@ -1,20 +1,23 @@
 -- Add up migration script here
+-- Enable UUID support
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
 -- Users table with login codes
 CREATE TABLE IF NOT EXISTS users (
-    id integer PRIMARY KEY AUTOINCREMENT,
-    username text NOT NULL UNIQUE,
-    code text NOT NULL UNIQUE,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid (),
+    username varchar(255) NOT NULL UNIQUE,
+    code varchar(255) NOT NULL UNIQUE,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Scores table with detailed game stats
 CREATE TABLE IF NOT EXISTS scores (
-    id integer PRIMARY KEY AUTOINCREMENT,
-    user_id integer NOT NULL,
+    id bigserial PRIMARY KEY,
+    user_id uuid NOT NULL,
     score integer NOT NULL,
     floor_reached integer NOT NULL,
     play_time_seconds integer NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id)
 );
 

@@ -19,7 +19,7 @@ setup:
 # Development Commands
 
 # Start development server with hot reload
-dev: kill-server db-setup db-migrate
+dev: kill-server db-migrate
     cargo leptos watch | bunyan
 
 # Run cargo check on both native and wasm targets
@@ -86,7 +86,7 @@ kill-server:
 
 # Setup the database
 db-setup:
-    sqlite3 ${DATABASE_URL#sqlite:} ".databases"
+    ./scripts/init_db
 
 alias migrate:=db-migrate
 alias m:=db-migrate
@@ -97,12 +97,6 @@ db-migrate:
 # Generate sqlx prepare check files
 db-prepare:
     sqlx prepare
-
-# Reset database
-db-reset:
-    rm -f ${DATABASE_URL#sqlite:}
-    just db-setup
-    just db-migrate
 
 alias migrations:=db-new-migration
 # Create new migration

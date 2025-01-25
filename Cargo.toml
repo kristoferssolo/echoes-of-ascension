@@ -34,14 +34,18 @@ wasm-bindgen = "=0.2.100"
 sqlx = { version = "0.8", features = [
   "runtime-tokio",
   "macros",
-  "sqlite-unbundled",
+  "postgres",
+  "uuid",
   "chrono",
   "migrate",
 ] }
+uuid = { version = "1.12", features = ["v4", "serde"] }
 serde = { version = "1", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde", "clock"] }
 secrecy = { version = "0.10", features = ["serde"] }
 validator = "0.20"
+config = { version = "0.15", features = ["toml"], default-features = false }
+serde-aux = "4"
 
 # See https://github.com/leptos-rs/cargo-leptos for documentation of all the parameters.
 

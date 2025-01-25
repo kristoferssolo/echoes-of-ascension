@@ -1,10 +1,14 @@
+set dotenv-load
+
 export RUSTC_WRAPPER:="sccache"
-# Li st all available commands
+
+# List all available commands
 default:
     @just --list
 
 # Install required tools and dependencies
 setup:
+    just db-setup
     rustup toolchain install nightly
     rustup default nightly
     rustup target add wasm32-unknown-unknown
@@ -15,8 +19,8 @@ setup:
 # Development Commands
 
 # Start development server with hot reload
-dev: kill-server
-    RUST_BACKTRACE=full cargo leptos watch | bunyan
+dev: kill-server db-setup db-migrate
+    cargo leptos watch | bunyan
 
 # Run cargo check on both native and wasm targets
 check:
@@ -61,16 +65,9 @@ build-wasm:
 build-server:
     cargo leptos build-only-server
 
-# Database Commands (add these when you set up your database)
-db-setup:
-    echo "Add your database setup commands here"
-
-db-migrate:
-    echo "Add your database migration commands here"
-
-# Deployment Commands (customize based on your deployment strategy)
+# Deployment Commands
 deploy:
-    echo "Add your deployment commands here"
+    echo "Add deployment commands here"
 
 # Combined commands
 check-all: fmt lint check test
@@ -83,4 +80,32 @@ kill-server:
     #!/usr/bin/env sh
     pkill -f "target/debug/server" || true
     pkill -f "cargo-leptos" || true
+
+
+# Database Commands
+
+# Setup the database
+db-setup:
+    sqlite3 ${DATABASE_URL#sqlite:} ".databases"
+
+alias migrate:=db-migrate
+alias m:=db-migrate
+# Migrate
+db-migrate:
+    sqlx migrate run
+
+# Generate sqlx prepare check files
+db-prepare:
+    sqlx prepare
+
+# Reset database
+db-reset:
+    rm -f ${DATABASE_URL#sqlite:}
+    just db-setup
+    just db-migrate
+
+alias migrations:=db-new-migration
+# Create new migration
+db-new-migration name:
+    sqlx migrate add -r {{name}}
 

@@ -97,29 +97,22 @@ checksum = "34ac096ce696dc2fcabef30516bb13c0a68a11d30131d3df6f04711467681b04"
 name = "app"
 version = "0.1.0"
 dependencies = [
- "argon2",
  "cfg-if",
  "chrono",
  "config 0.15.6",
- "hex",
  "http",
  "leptos",
  "leptos_axum",
  "leptos_meta",
  "leptos_router",
- "password-hash",
- "rand",
- "secrecy",
  "serde",
  "serde-aux",
- "sqlx",
  "thiserror 2.0.11",
  "tokio",
  "tracing",
  "tracing-bunyan-formatter",
  "tracing-log 0.2.0",
  "tracing-subscriber",
- "unicode-segmentation",
  "uuid",
 ]
 
@@ -2459,14 +2452,26 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "app",
+ "argon2",
  "axum",
+ "config 0.15.6",
+ "hex",
  "leptos",
  "leptos_axum",
+ "leptos_router",
+ "password-hash",
+ "rand",
+ "secrecy",
+ "serde",
+ "serde-aux",
+ "sqlx",
+ "thiserror 2.0.11",
  "tokio",
  "tower",
  "tower-http",
  "tracing",
  "tracing-log 0.2.0",
+ "unicode-segmentation",
  "uuid",
 ]
 

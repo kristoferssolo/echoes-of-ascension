@@ -1,13 +1,9 @@
-use serde::{Deserialize, Serialize};
+use app::models::{response::RegisterResponse, user::form::RegisterUserForm};
+use secrecy::ExposeSecret;
 
 use super::{user_code::UserCode, username::Username};
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct RegisterUserForm {
-    pub username: String,
-}
-
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct NewUser {
     pub username: Username,
     pub code: UserCode,
@@ -21,5 +17,14 @@ impl TryFrom<RegisterUserForm> for NewUser {
             username,
             ..Default::default()
         })
+    }
+}
+
+impl From<NewUser> for RegisterResponse {
+    fn from(value: NewUser) -> Self {
+        Self {
+            username: value.username.as_ref().into(),
+            code: value.code.expose_secret().into(),
+        }
     }
 }

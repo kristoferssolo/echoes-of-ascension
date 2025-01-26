@@ -1,9 +1,10 @@
+use app::models::user::error::UserError;
 use sqlx::PgPool;
 
-use crate::models::user::{error::UserError, new_user::NewUser};
+use crate::{domain::user::NewUser, error::user::ServerUserError};
 
 #[tracing::instrument(name = "Saving new user details in the database", skip(new_user, pool))]
-pub async fn insert_user(pool: &PgPool, new_user: &NewUser) -> Result<(), UserError> {
+pub async fn insert_user(pool: &PgPool, new_user: &NewUser) -> Result<(), ServerUserError> {
     sqlx::query!(
         r#"
         INSERT INTO "user" (username, code)
@@ -18,9 +19,9 @@ pub async fn insert_user(pool: &PgPool, new_user: &NewUser) -> Result<(), UserEr
         tracing::error!("Failed to execute query: {:?}", e);
         match e {
             sqlx::Error::Database(ref dbe) if dbe.constraint() == Some("user_username_key") => {
-                UserError::UsernameTaken(new_user.username.as_ref().to_string())
+                ServerUserError::User(UserError::UsernameTaken(new_user.username.as_ref().into()))
             }
-            _ => UserError::Database(e),
+            _ => ServerUserError::Database(e),
         }
     })?;
     Ok(())

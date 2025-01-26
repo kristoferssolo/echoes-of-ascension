@@ -18,7 +18,7 @@ setup:
 
 # Start development server with hot reload
 dev: kill-server db-migrate
-    RUST_BACKTRACE=full cargo leptos watch | bunyan
+    cargo leptos watch | bunyan
 
 # Run cargo check on both native and wasm targets
 check:

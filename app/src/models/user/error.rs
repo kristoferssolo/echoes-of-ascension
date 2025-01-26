@@ -8,9 +8,6 @@ pub enum UserError {
     #[error("Code hashing failed: {0}")]
     HashingError(String),
 
-    #[error("Database error: {0}")]
-    Database(#[from] sqlx::Error),
-
     #[error("Username already taken: {0}")]
     UsernameTaken(String),
 

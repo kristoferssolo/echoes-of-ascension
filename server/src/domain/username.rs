@@ -2,7 +2,7 @@ use rand::{seq::SliceRandom, thread_rng, Rng};
 use std::str::FromStr;
 use unicode_segmentation::UnicodeSegmentation;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Username(String);
 
 impl TryFrom<String> for Username {

@@ -1,16 +1,19 @@
-mod application;
+mod config;
+mod db;
+pub mod domain;
+mod error;
 mod routes;
+mod server;
+mod startup;
 
-use app::{
-    config::get_config,
-    startup::ApplicationError,
-    telemetry::{get_subscriber, init_subscriber},
-};
-use application::Server;
+use app::telemetry::{get_subscriber, init_subscriber};
+use config::get_config;
+use error::ServerError;
 use leptos::prelude::*;
+use server::Server;
 
 #[tokio::main]
-async fn main() -> Result<(), ApplicationError> {
+async fn main() -> Result<(), ServerError> {
     // Generate the list of routes in your Leptos App
     let subscriber = get_subscriber("echoes-of-ascension-server", "info", std::io::stdout);
     init_subscriber(subscriber);

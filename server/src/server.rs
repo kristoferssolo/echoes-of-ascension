@@ -1,17 +1,18 @@
-use app::{
-    config::Settings,
-    startup::{get_connection_pool, App, ApplicationError},
-};
 use leptos::prelude::*;
 use tokio::{net::TcpListener, task::JoinHandle};
 
-use crate::routes::route;
+use crate::{
+    config::Settings,
+    error::ServerError,
+    routes::route,
+    startup::{get_connection_pool, App},
+};
 
 #[derive(Debug)]
 pub struct Server(JoinHandle<Result<(), std::io::Error>>);
 
 impl Server {
-    pub async fn build(config: Settings) -> Result<Self, ApplicationError> {
+    pub async fn build(config: Settings) -> Result<Self, ServerError> {
         let pool = get_connection_pool(&config.database);
 
         // Get Leptos configuration but override the address

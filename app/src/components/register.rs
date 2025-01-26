@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-use crate::server_fn::auth::register_user;
+use crate::{models::user::form::RegisterUserForm, server_fn::auth::register_user};
 
 #[component]
 pub fn RegisterPage() -> impl IntoView {
@@ -34,14 +34,14 @@ pub fn RegisterPage() -> impl IntoView {
                         }
                         prop:value=username
                     />
-                    <div class="error">
-                        {move || {
-                            response
-                                .get()
-                                .and_then(|result| result.err())
-                                .map(|err| err.to_string())
-                        }}
-                    </div>
+                // <div class="error">
+                // {move || {
+                // response
+                // .get()
+                // .and_then(|result| result.err())
+                // .map(|err| err.to_string())
+                // }}
+                // </div>
                 </div>
                 <button type="submit" disabled=pending>
                     {move || {

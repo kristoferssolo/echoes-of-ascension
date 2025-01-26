@@ -1,3 +1,4 @@
+use app::models::user::error::UserError;
 use argon2::Argon2;
 use password_hash::SaltString;
 use std::ops::Deref;
@@ -5,9 +6,7 @@ use std::ops::Deref;
 use rand::{rngs::OsRng, thread_rng, Rng};
 use secrecy::{ExposeSecret, SecretString};
 
-use super::error::UserError;
-
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct UserCode(SecretString);
 
 impl UserCode {

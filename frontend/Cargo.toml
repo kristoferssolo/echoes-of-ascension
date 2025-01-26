@@ -14,3 +14,6 @@ leptos = { workspace = true, features = ["hydrate"] }
 
 tracing.workspace = true
 wasm-bindgen.workspace = true
+
+[lints]
+workspace = true

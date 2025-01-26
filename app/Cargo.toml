@@ -37,3 +37,6 @@ hex.workspace = true
 default = []
 hydrate = ["leptos/hydrate"]
 ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum"]
+
+[lints]
+workspace = true

@@ -18,7 +18,10 @@ setup:
 
 # Start development server with hot reload
 dev: kill-server db-migrate
-    cargo leptos watch | bunyan
+    #!/usr/bin/env bash
+    (RUSTC_WRAPPER=sccache cargo watch -x "run -p backend" | bunyan) & \
+    (RUSTC_WRAPPER=sccache cargo leptos watch | bunyan) & \
+    wait
 
 # Run cargo check on both native and wasm targets
 check:
@@ -49,6 +52,7 @@ clean:
 
 # Build for development
 build-dev:
+    cargo build
     cargo leptos build
 
 # Build for production
@@ -79,7 +83,6 @@ kill-server:
     pkill -f "target/debug/server" || true
     pkill -f "cargo-leptos" || true
 
-
 # Database Commands
 
 # Setup the database
@@ -90,7 +93,7 @@ alias migrate:=db-migrate
 alias m:=db-migrate
 # Migrate
 db-migrate:
-    sqlx migrate run
+    sqlx migrate run --source backend/migrations
 
 # Generate sqlx prepare check files
 db-prepare:

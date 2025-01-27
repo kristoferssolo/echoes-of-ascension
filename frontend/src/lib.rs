@@ -1,11 +1,9 @@
-use app::telemetry::{get_subscriber, init_subscriber};
+pub mod app;
 
+#[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]
 pub fn hydrate() {
-    use app::*;
-    // initializes logging using the `log` crate
-    let subscriber = get_subscriber("echoes-of-ascension-frontend", "info", std::io::stdout);
-    init_subscriber(subscriber);
-
+    use crate::app::*;
+    console_error_panic_hook::set_once();
     leptos::mount::hydrate_body(App);
 }

@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, str::FromStr};
 
 use secrecy::{ExposeSecret, SecretString};
 use serde::Deserialize;
@@ -66,10 +66,10 @@ impl DatabaseSettings {
 pub fn get_config() -> Result<Settings, config::ConfigError> {
     let base_path = std::env::current_dir().expect("Failed to determine current directory");
     let config_directory = base_path.join("backend").join("config");
-    let env: Environment = std::env::var("APP_ENVIRONMENT")
+    let env = std::env::var("APP_ENVIRONMENT")
         .unwrap_or_else(|_| "local".into())
-        .try_into()
-        .expect("Failed to parse APP_ENVIRONMENT");
+        .parse()
+        .unwrap_or(Environment::Local);
 
     let env_filename = format!("{}.toml", &env);
 
@@ -97,7 +97,14 @@ impl Display for Environment {
 impl TryFrom<String> for Environment {
     type Error = String;
     fn try_from(value: String) -> Result<Self, Self::Error> {
-        match value.to_lowercase().as_str() {
+        Self::from_str(&value)
+    }
+}
+
+impl FromStr for Environment {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
             "local" => Ok(Self::Local),
             "production" => Ok(Self::Production),
             other => Err(format!(

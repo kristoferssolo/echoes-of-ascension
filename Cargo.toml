@@ -20,5 +20,6 @@ codegen-units = 1
 
 [workspace.lints.clippy]
 nursery = "warn"
-pedantic = "warn"
 unwrap_used = "warn"
+style = "warn"
+perf = "warn"

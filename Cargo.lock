@@ -871,6 +871,7 @@ dependencies = [
  "leptos_router",
  "reqwest",
  "serde",
+ "thiserror 2.0.11",
  "tokio",
  "wasm-bindgen",
 ]

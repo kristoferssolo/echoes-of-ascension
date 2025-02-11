@@ -1,25 +1,60 @@
-[workspace]
-members = ["frontend", "backend"]
-resolver = "2"
+[package]
+name = "echoes-of-ascension"
+version = "0.1.0"
+edition = "2021"
+authors = ["Kristofers Solo <dev@kristofers.xyz>"]
 
-[workspace.dependencies]
-cfg-if = "1"
-http = "1"
-thiserror = "2.0"
-wasm-bindgen = "=0.2.100"
-tokio = { version = "1.43", features = ["rt", "macros", "tracing"] }
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "echoes-of-ascension"
+
+[dependencies]
+axum = "0.8"
+chrono = { version = "0.4", features = ["serde", "clock"] }
+config = { version = "0.15", features = ["toml"], default-features = false }
 serde = { version = "1", features = ["derive"] }
-tower = { version = "0.5", features = ["full"] }
-tower-http = { version = "0.6", features = ["full"] }
-uuid = { version = "1.12", features = ["v4", "serde"] }
+sqlx = { version = "0.8", default-features = false, features = [
+  "runtime-tokio",
+  "tls-rustls",
+  "macros",
+  "postgres",
+  "uuid",
+  "chrono",
+  "migrate",
+] }
+tokio = { version = "1.39", features = [
+  "rt",
+  "macros",
+  "tracing",
+  "rt-multi-thread",
+] }
+uuid = { version = "1.8", features = ["v4", "serde"] }
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+tower-http = { version = "0.6", features = ["trace"] }
+tracing-bunyan-formatter = "0.3"
+tracing-log = "0.2"
+secrecy = { version = "0.10", features = ["serde"] }
+serde-aux = "4"
+reqwest = { version = "0.12", default-features = false, features = [
+  "json",
+  "rustls-tls",
+] }
+askama = { version = "0.12", features = ["with-axum"] }
 
-[profile.release]
-opt-level = "z"
-lto = true
-codegen-units = 1
 
-[workspace.lints.clippy]
+[dev-dependencies]
+once_cell = "1.19"
+fake = "3.1"
+quickcheck = "1.0"
+quickcheck_macros = "1.0"
+wiremock = "0.6"
+serde_json = "1"
+
+[lints.clippy]
+pedantic = "warn"
 nursery = "warn"
 unwrap_used = "warn"
-style = "warn"
-perf = "warn"

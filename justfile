@@ -1,106 +1,83 @@
 set dotenv-load
 
+PROJECT_NAME := "echoes-of-ascension"
+
 # List all available commands
 default:
     @just --list
 
-# Install required tools and dependencies
-setup:
-    just db-setup
-    rustup toolchain install nightly
-    rustup default nightly
-    rustup target add wasm32-unknown-unknown
-    cargo install cargo-leptos
-    cargo install cargo-watch
-    cargo install just
+# Format code
+fmt:
+    cargo fmt
 
-# Development Commands
-
-# Start development server with hot reload
-dev: kill-server db-migrate
-    #!/usr/bin/env bash
-    (RUSTC_WRAPPER=sccache cargo watch -x "run -p backend" | bunyan) & \
-    (RUSTC_WRAPPER=sccache cargo leptos watch | bunyan) & \
-    wait
-
-# Run cargo check on both native and wasm targets
-check:
-    cargo check --all-targets
-    cargo check --all-targets --target wasm32-unknown-unknown
+# Lint code
+lint:
+    cargo clippy -- -D warnings
 
 # Run tests
 test:
-    cargo test --all-targets
-    cargo test --all-targets --target wasm32-unknown-unknown
+    cargo test
 
-# Format code
-fmt:
-    cargo fmt --all
+# Build the application (debug)
+build:
+    cargo build
 
-# Run clippy lints
-lint:
-    cargo clippy --all-targets -- -D warnings
-    cargo clippy --all-targets --target wasm32-unknown-unknown -- -D warnings
+# Build the application (release)
+build-release:
+    cargo build --release
 
-# Clean build artifacts
+# Run the application (debug)
+run:
+    cargo run
+
+# Run the application (release)
+run-release:
+    cargo run --release
+
+# Run migrations
+migrate:
+    cargo sqlx migrate run
+
+# Revert migrations
+migrate-revert:
+    cargo sqlx migrate revert
+
+# Create a new migration
+migrate-create name:
+    cargo sqlx migrate add $(name)
+
+# Check migrations
+migrate-status:
+    cargo sqlx migrate status
+
+# Watch for changes and run tests/linting/run (for development)
+dev:
+    cargo watch -x clippy -x test -x run | bunyan
+
+# Build, migrate, and run (release)
+deploy:
+    just build-release
+    just migrate
+    just run-release
+
+# Generate documentation
+doc:
+    cargo doc --open
+
+# Clean the project
 clean:
     cargo clean
-    rm -rf dist
-    rm -rf target
 
-# Build Commands
+# Analyze binary size
+analyze-size:
+    cargo build --release
+    cargo install cargo-bloat
+    cargo bloat --release --all-features --crates
 
-# Build for development
-build-dev:
-    cargo build
-    cargo leptos build
+# Check dependencies for security vulnerabilities
+audit:
+    cargo audit
 
-# Build for production
-build-prod:
-    cargo leptos build --release
-
-# Build WASM only
-build-wasm:
-    cargo leptos build-only-wasm
-
-# Build server only
-build-server:
-    cargo leptos build-only-server
-
-# Deployment Commands
-deploy:
-    echo "Add deployment commands here"
-
-# Combined commands
-check-all: fmt lint check test
-
-# Start production server
-serve-prod:
-    cargo leptos serve --release
-
-kill-server:
-    #!/usr/bin/env sh
-    pkill -f "target/debug/server" || true
-    pkill -f "cargo-leptos" || true
-
-# Database Commands
-
-# Setup the database
-db-setup:
-    ./scripts/init_db
-
-alias migrate:=db-migrate
-alias m:=db-migrate
-# Migrate
-db-migrate:
-    sqlx migrate run --source backend/migrations
-
-# Generate sqlx prepare check files
-db-prepare:
-    sqlx prepare
-
-alias migrations:=db-new-migration
-# Create new migration
-db-new-migration name:
-    sqlx migrate add -r {{name}}
-
+# Check for outdated dependencies
+outdated:
+    cargo outdated

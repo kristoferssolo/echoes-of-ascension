@@ -22,3 +22,5 @@
 //!
 //! pub struct UserId(pub String);
 //! ```
+
+pub mod user;

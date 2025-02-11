@@ -1,3 +1,4 @@
+mod api;
 mod health_check;
 
 use axum::{routing::get, Router};
@@ -19,6 +20,7 @@ use uuid::Uuid;
 pub fn route(state: AppState) -> Router {
     Router::new()
         .route("/health_check", get(health_check))
+        .nest("/api", api::routes())
         .with_state(state)
         .layer(
             TraceLayer::new_for_http()
